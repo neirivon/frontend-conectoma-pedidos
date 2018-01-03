@@ -1,6 +1,7 @@
 import { ProdutoDTO } from './../../models/produto.dto';
 import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams } from 'ionic-angular';
+import { ProdutoService } from '../../services/domain/produto.service';
 
 @IonicPage()
 @Component({
@@ -9,23 +10,20 @@ import { IonicPage, NavController, NavParams } from 'ionic-angular';
 })
 export class ProdutosPage {
 
-  items : ProdutoDTO[];
+  items: ProdutoDTO[];
 
-  constructor(public navCtrl: NavController, public navParams: NavParams) {
+  constructor(
+    public navCtrl: NavController,
+    public navParams: NavParams,
+    public produtoService: ProdutoService) {
   }
 
   ionViewDidLoad() {
-    this.items = [
-      {
-        id: "1",
-        descricao: 'Refrigerante coca-cola 350ml',
-        valor: 3.50
+    let categoria_id = this.navParams.get('categoria_id');
+    this.produtoService.findByCategoria(categoria_id)
+      .subscribe(response => {
+        this.items = response['content'];
       },
-      {
-        id: "2",
-        descricao: 'X-Bruto',
-        valor: 20.50
-      }
-    ]
-  };
+      error => { });
+  }
 }
